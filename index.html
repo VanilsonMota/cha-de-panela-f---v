@@ -8,17 +8,26 @@
 <style>
 body {
   font-family: Arial, sans-serif;
-  background: #fff7f7;
+  background: #fff5f8;
+  margin: 0;
   padding: 20px;
-  text-align: center;
 }
 
-h1 { color: #d63384; }
-h2 { color: #555; }
-
 .container {
-  max-width: 600px;
+  max-width: 700px;
   margin: auto;
+}
+
+h1 {
+  text-align: center;
+  color: #d63384;
+}
+
+h2 {
+  margin-top: 30px;
+  color: #444;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
 }
 
 .item {
@@ -26,9 +35,10 @@ h2 { color: #555; }
   padding: 12px;
   margin: 8px 0;
   border-radius: 10px;
-  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   transition: 0.2s;
-  text-align: left;
 }
 
 .item:hover {
@@ -36,9 +46,13 @@ h2 { color: #555; }
 }
 
 .reservado {
-  background: #ddd;
+  background: #e0e0e0;
   text-decoration: line-through;
-  cursor: not-allowed;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
 }
 
 .nome {
@@ -46,11 +60,28 @@ h2 { color: #555; }
   color: #555;
 }
 
+button {
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-reservar {
+  background: #d63384;
+  color: white;
+}
+
+.btn-remover {
+  background: #999;
+  color: white;
+}
+
 .contador {
+  text-align: center;
   margin-top: 20px;
   font-weight: bold;
 }
-
 </style>
 </head>
 
@@ -58,22 +89,21 @@ h2 { color: #555; }
 
 <div class="container">
 <h1>🏠 Chá de Panela</h1>
-<h2>👰 Fernanda & 🤵 Vitor</h2>
+<p style="text-align:center;">👰 Fernanda & 🤵 Vitor</p>
 
 <div id="lista"></div>
 
 <div class="contador" id="contador">
-📊 0 de 24 itens escolhidos
+📊 0 itens escolhidos
 </div>
 
-<p>💕 Obrigada pela presença e carinho!</p>
+<p style="text-align:center;">💕 Obrigada pela presença!</p>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔥 SUA CONFIG (já pronta)
 const firebaseConfig = {
   apiKey: "AIzaSyAn04Zv4PhlkxE_9DPdw-2x0q0ImgoI8YY",
   authDomain: "lista-cha-panela-42e96.firebaseapp.com",
@@ -86,60 +116,104 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// LISTA DE ITENS
-const itens = [
-  "Jogo de lençol","Edredom","Travesseiro","Cesto de roupas","Cortinas","Tábua de passar roupa",
-  "Utensílios de cozinha","Faqueiro","Jogo de copos","Tapete de cozinha","Pano de louça","Formas",
-  "Potes organizadores","Fruteira de mesa","Jarra de vidro","Toalha de mesa","Tábua de cortar carne",
-  "Jogo de toalha de banho","Tapete de banheiro","Toalhas de mão","Organizadores / saboneteira",
-  "Colcha para sofá","Almofadas","Vaso decorativo"
-];
+// 📦 Itens por categoria
+const categorias = {
+  "🛏️ Quarto": [
+    "Jogo de lençol","Edredom","Travesseiro","Cesto de roupas","Cortinas","Tábua de passar roupa"
+  ],
+  "🍳 Cozinha": [
+    "Utensílios de cozinha","Faqueiro","Jogo de copos","Tapete de cozinha","Pano de louça","Formas",
+    "Potes organizadores","Fruteira de mesa","Jarra de vidro","Toalha de mesa","Tábua de cortar carne"
+  ],
+  "🛁 Banheiro": [
+    "Jogo de toalha de banho","Tapete de banheiro","Toalhas de mão","Organizadores / saboneteira"
+  ],
+  "🛋️ Sala": [
+    "Colcha para sofá","Almofadas","Vaso decorativo"
+  ]
+};
 
 const lista = document.getElementById("lista");
 const contador = document.getElementById("contador");
 
-let totalReservados = 0;
-
-// CRIAR ITENS
-itens.forEach((nomeItem, index) => {
-  const id = "item_" + index;
-
-  const div = document.createElement("div");
-  div.className = "item";
-  div.innerHTML = `<strong>${nomeItem}</strong><div class="nome"></div>`;
-  
-  lista.appendChild(div);
-
-  // 🔄 Atualização em tempo real
-  onSnapshot(doc(db, "lista", id), (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      div.classList.add("reservado");
-      div.querySelector(".nome").innerText = "Reservado por: " + data.nome;
-    }
-    atualizarContador();
-  });
-
-  // 🖱️ Clique para reservar
-  div.onclick = async () => {
-    if (div.classList.contains("reservado")) return;
-
-    const nome = prompt("Digite seu nome:");
-
-    if (nome) {
-      await setDoc(doc(db, "lista", id), {
-        nome: nome
-      });
-    }
-  };
-});
-
-// 📊 Atualiza contador
+// 🔁 Atualiza contador
 function atualizarContador() {
   const reservados = document.querySelectorAll(".reservado").length;
-  contador.innerText = `📊 ${reservados} de ${itens.length} itens escolhidos`;
+  const total = document.querySelectorAll(".item").length;
+  contador.innerText = `📊 ${reservados} de ${total} itens escolhidos`;
 }
 
+// 🏗️ Montar lista
+Object.keys(categorias).forEach(categoria => {
+
+  const titulo = document.createElement("h2");
+  titulo.innerText = categoria;
+  lista.appendChild(titulo);
+
+  categorias[categoria].forEach((nomeItem, index) => {
+    const id = categoria + "_" + index;
+
+    const div = document.createElement("div");
+    div.className = "item";
+
+    const info = document.createElement("div");
+    info.className = "info";
+
+    const nome = document.createElement("strong");
+    nome.innerText = nomeItem;
+
+    const pessoa = document.createElement("div");
+    pessoa.className = "nome";
+
+    info.appendChild(nome);
+    info.appendChild(pessoa);
+
+    const botao = document.createElement("button");
+    botao.className = "btn-reservar";
+    botao.innerText = "Reservar";
+
+    div.appendChild(info);
+    div.appendChild(botao);
+
+    lista.appendChild(div);
+
+    // 🔄 Tempo real
+    onSnapshot(doc(db, "lista", id), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        div.classList.add("reservado");
+        pessoa.innerText = "Reservado por: " + data.nome;
+
+        botao.innerText = "Remover";
+        botao.className = "btn-remover";
+
+      } else {
+        div.classList.remove("reservado");
+        pessoa.innerText = "";
+
+        botao.innerText = "Reservar";
+        botao.className = "btn-reservar";
+      }
+
+      atualizarContador();
+    });
+
+    // 🖱️ Ação do botão
+    botao.onclick = async () => {
+      if (div.classList.contains("reservado")) {
+        await deleteDoc(doc(db, "lista", id));
+      } else {
+        const nomePessoa = prompt("Digite seu nome:");
+        if (nomePessoa) {
+          await setDoc(doc(db, "lista", id), {
+            nome: nomePessoa
+          });
+        }
+      }
+    };
+
+  });
+});
 </script>
 
 </body>
