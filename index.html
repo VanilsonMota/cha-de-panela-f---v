@@ -1,89 +1,145 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Chá de Panela - Fernanda & Vitor</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff7f7;
-      padding: 20px;
-    }
-    h1, h2 {
-      color: #d63384;
-    }
-    .item {
-      margin: 5px 0;
-    }
-    .contador {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    .footer {
-      margin-top: 20px;
-      color: #555;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chá de Panela - Fernanda & Vitor</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #fff7f7;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 { color: #d63384; }
+h2 { color: #555; }
+
+.container {
+  max-width: 600px;
+  margin: auto;
+}
+
+.item {
+  background: white;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  text-align: left;
+}
+
+.item:hover {
+  transform: scale(1.02);
+}
+
+.reservado {
+  background: #ddd;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.nome {
+  font-size: 12px;
+  color: #555;
+}
+
+.contador {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+</style>
 </head>
+
 <body>
 
-<h1>🏠 Lista de Chá de Panela</h1>
-<h2>👰🤵 Fernanda & Vitor</h2>
+<div class="container">
+<h1>🏠 Chá de Panela</h1>
+<h2>👰 Fernanda & 🤵 Vitor</h2>
 
-<div id="lista">
-
-<h3>🛏️ Quarto</h3>
-<div class="item"><input type="checkbox"> Jogo de lençol</div>
-<div class="item"><input type="checkbox"> Edredom</div>
-<div class="item"><input type="checkbox"> Travesseiro</div>
-<div class="item"><input type="checkbox"> Cesto de roupas</div>
-<div class="item"><input type="checkbox"> Cortinas</div>
-<div class="item"><input type="checkbox"> Tábua de passar roupa</div>
-
-<h3>🍳 Cozinha</h3>
-<div class="item"><input type="checkbox"> Utensílios de cozinha</div>
-<div class="item"><input type="checkbox"> Faqueiro</div>
-<div class="item"><input type="checkbox"> Jogo de copos</div>
-<div class="item"><input type="checkbox"> Tapete de cozinha</div>
-<div class="item"><input type="checkbox"> Pano de louça</div>
-<div class="item"><input type="checkbox"> Formas</div>
-<div class="item"><input type="checkbox"> Potes organizadores</div>
-<div class="item"><input type="checkbox"> Fruteira de mesa</div>
-<div class="item"><input type="checkbox"> Jarra de vidro</div>
-<div class="item"><input type="checkbox"> Toalha de mesa</div>
-<div class="item"><input type="checkbox"> Tábua de cortar carne</div>
-
-<h3>🛁 Banheiro</h3>
-<div class="item"><input type="checkbox"> Jogo de toalha de banho</div>
-<div class="item"><input type="checkbox"> Tapete de banheiro</div>
-<div class="item"><input type="checkbox"> Toalhas de mão</div>
-<div class="item"><input type="checkbox"> Organizadores / saboneteira</div>
-
-<h3>🛋️ Sala</h3>
-<div class="item"><input type="checkbox"> Colcha para sofá</div>
-<div class="item"><input type="checkbox"> Almofadas</div>
-<div class="item"><input type="checkbox"> Vaso decorativo</div>
-
-</div>
+<div id="lista"></div>
 
 <div class="contador" id="contador">
-📊 0 itens escolhidos
+📊 0 de 24 itens escolhidos
 </div>
 
-<div class="footer">
-💕 Obrigada pela presença e carinho!
+<p>💕 Obrigada pela presença e carinho!</p>
 </div>
 
-<script>
-const checkboxes = document.querySelectorAll("input[type='checkbox']");
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔥 SUA CONFIG (já pronta)
+const firebaseConfig = {
+  apiKey: "AIzaSyAn04Zv4PhlkxE_9DPdw-2x0q0ImgoI8YY",
+  authDomain: "lista-cha-panela-42e96.firebaseapp.com",
+  projectId: "lista-cha-panela-42e96",
+  storageBucket: "lista-cha-panela-42e96.firebasestorage.app",
+  messagingSenderId: "484481046376",
+  appId: "1:484481046376:web:cd8a1cdd70ff0252f0a8dd"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// LISTA DE ITENS
+const itens = [
+  "Jogo de lençol","Edredom","Travesseiro","Cesto de roupas","Cortinas","Tábua de passar roupa",
+  "Utensílios de cozinha","Faqueiro","Jogo de copos","Tapete de cozinha","Pano de louça","Formas",
+  "Potes organizadores","Fruteira de mesa","Jarra de vidro","Toalha de mesa","Tábua de cortar carne",
+  "Jogo de toalha de banho","Tapete de banheiro","Toalhas de mão","Organizadores / saboneteira",
+  "Colcha para sofá","Almofadas","Vaso decorativo"
+];
+
+const lista = document.getElementById("lista");
 const contador = document.getElementById("contador");
 
-checkboxes.forEach(cb => {
-  cb.addEventListener("change", () => {
-    const marcados = document.querySelectorAll("input[type='checkbox']:checked").length;
-    contador.innerText = `📊 ${marcados} itens escolhidos`;
+let totalReservados = 0;
+
+// CRIAR ITENS
+itens.forEach((nomeItem, index) => {
+  const id = "item_" + index;
+
+  const div = document.createElement("div");
+  div.className = "item";
+  div.innerHTML = `<strong>${nomeItem}</strong><div class="nome"></div>`;
+  
+  lista.appendChild(div);
+
+  // 🔄 Atualização em tempo real
+  onSnapshot(doc(db, "lista", id), (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      div.classList.add("reservado");
+      div.querySelector(".nome").innerText = "Reservado por: " + data.nome;
+    }
+    atualizarContador();
   });
+
+  // 🖱️ Clique para reservar
+  div.onclick = async () => {
+    if (div.classList.contains("reservado")) return;
+
+    const nome = prompt("Digite seu nome:");
+
+    if (nome) {
+      await setDoc(doc(db, "lista", id), {
+        nome: nome
+      });
+    }
+  };
 });
+
+// 📊 Atualiza contador
+function atualizarContador() {
+  const reservados = document.querySelectorAll(".reservado").length;
+  contador.innerText = `📊 ${reservados} de ${itens.length} itens escolhidos`;
+}
+
 </script>
 
 </body>
