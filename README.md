@@ -33,7 +33,7 @@ A aplicação permite que convidados visualizem os itens disponíveis e reservem
 
 O projeto está disponível online através do GitHub Pages:
 
-👉 (adicione aqui o seu link)
+👉 https://vanilsonmota.github.io/cha-de-panela-f---v/
 
 ---
 
