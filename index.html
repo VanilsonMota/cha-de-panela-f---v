@@ -99,6 +99,9 @@ button {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, doc, setDoc, deleteDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// 🔐 SENHA ADMIN
+const ADMIN_PASSWORD = "245005"; //
+
 // 🔐 ID único do usuário
 let userId = localStorage.getItem("userId");
 if (!userId) {
@@ -210,10 +213,18 @@ Object.keys(categorias).forEach(categoria => {
         if (snap.exists()) {
           const data = snap.data();
 
+          // 👤 Dono remove
           if (data.userId === userId) {
             await deleteDoc(ref);
           } else {
-            alert("Você não pode remover a reserva de outra pessoa!");
+            // 🔐 Admin remove
+            const senha = prompt("Digite a senha de administrador:");
+
+            if (senha === ADMIN_PASSWORD) {
+              await deleteDoc(ref);
+            } else {
+              alert("Você não pode remover a reserva de outra pessoa!");
+            }
           }
         }
       } else {
