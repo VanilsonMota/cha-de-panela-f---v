@@ -1,43 +1,102 @@
-# cha-de-panela-f---v
+# 🏠 Lista de Chá de Panela – Fernanda & Vitor
 
-Utilizando HTML e firebase.
+Este projeto foi desenvolvido a partir de uma solicitação da Fernanda:
 
-Criação de site simples com a seguinte base:
+> *"um site simples com a seguinte lista"*
 
-🏠 *Lista de Chá de Panela*
-👰🤵 *Fernanda & Vitor*
+A partir dessa ideia, foi criada uma aplicação web interativa, com o objetivo de organizar os presentes do chá de panela de forma prática e acessível para todos os convidados, ficando disponível online para acesso fácil via link.
 
-*🛏️ Quarto*
-◻️ Jogo de lençol
-◻️ Edredom
-◻️ Travesseiro
-◻️ Cesto de roupas
-◻️ Cortinas
-◻️ Tábua de passar roupa
+---
 
-*🍳 Cozinha*
-◻️ Utensílios de cozinha
-◻️ Faqueiro
-◻️ Jogo de copos
-◻️ Tapete de cozinha
-◻️ Pano de louça
-◻️ Formas
-◻️ Potes organizadores
-◻️ Fruteira de mesa
-◻️ Jarra de vidro
-◻️ Toalha de mesa
-◻️ Tábua de cortar carne
+## 💡 Sobre o projeto
 
-*🛁 Banheiro*
-◻️ Jogo de toalha de banho
-◻️ Tapete de banheiro
-◻️ Toalhas de mão
-◻️ Organizadores / saboneteira
+A aplicação permite que convidados visualizem os itens disponíveis e reservem um presente, informando seu nome. Após a escolha:
 
-*🛋️ Sala*
-◻️ Colcha para sofá
-◻️ Almofadas
-◻️ Vaso decorativo
+* O item é automaticamente marcado como reservado
+* O nome da pessoa fica visível
+* O item não pode ser escolhido novamente
+* A atualização acontece em tempo real para todos os usuários
 
-📊 _0 de 24 itens escolhidos_
-💕 _Obrigada pela presença e carinho!_
+---
+
+## 🚀 Tecnologias utilizadas
+
+* HTML5
+* CSS3
+* JavaScript (ES Modules)
+* Firebase (Firestore Database)
+* GitHub Pages (deploy)
+
+---
+
+## 🌐 Acesso ao site
+
+O projeto está disponível online através do GitHub Pages:
+
+👉 (adicione aqui o seu link)
+
+---
+
+## 📦 Funcionalidades
+
+* ✅ Lista organizada por cômodos (quarto, cozinha, banheiro, sala)
+* ✅ Reserva de itens com nome do convidado
+* ✅ Bloqueio automático de itens já escolhidos
+* ✅ Remoção de reserva (caso necessário)
+* ✅ Contador de itens escolhidos
+* ✅ Atualização em tempo real
+
+---
+
+## 🔐 Regras e funcionamento
+
+* Qualquer pessoa pode visualizar e reservar itens
+* Um item só pode ser reservado uma vez
+* O sistema utiliza banco de dados em tempo real
+* O código do projeto é protegido contra alterações externas
+
+---
+
+## 📁 Estrutura do projeto
+
+```
+📦 projeto
+ ┣ 📜 index.html
+ ┗ 📜 README.md
+```
+
+---
+
+## ⚙️ Como funciona
+
+1. O usuário acessa o site
+2. Escolhe um item disponível
+3. Informa seu nome
+4. O item é salvo no banco (Firebase)
+5. Todos os usuários veem a atualização instantaneamente
+
+---
+
+## 🎯 Objetivo
+
+Este projeto foi desenvolvido com o objetivo de:
+
+* Atender a uma necessidade real de organização de evento
+* Evitar presentes duplicados
+* Criar uma experiência simples e moderna para os convidados
+* Praticar desenvolvimento web com integração em tempo real
+
+---
+
+## 📌 Melhorias futuras
+
+* Interface mais sofisticada (UI/UX)
+* Sistema de autenticação simples
+* Bloqueio de remoção por terceiros
+* Integração com links de compra
+
+---
+
+## 💕
+
+Agradecemos pela participação e carinho!
