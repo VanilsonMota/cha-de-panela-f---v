@@ -38,11 +38,6 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: 0.2s;
-}
-
-.item:hover {
-  transform: scale(1.02);
 }
 
 .reservado {
@@ -102,8 +97,16 @@ button {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, setDoc, deleteDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+// 🔐 ID único do usuário
+let userId = localStorage.getItem("userId");
+if (!userId) {
+  userId = crypto.randomUUID();
+  localStorage.setItem("userId", userId);
+}
+
+// 🔥 Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAn04Zv4PhlkxE_9DPdw-2x0q0ImgoI8YY",
   authDomain: "lista-cha-panela-42e96.firebaseapp.com",
@@ -116,7 +119,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 📦 Itens por categoria
+// 📦 Categorias
 const categorias = {
   "🛏️ Quarto": [
     "Jogo de lençol","Edredom","Travesseiro","Cesto de roupas","Cortinas","Tábua de passar roupa"
@@ -136,14 +139,14 @@ const categorias = {
 const lista = document.getElementById("lista");
 const contador = document.getElementById("contador");
 
-// 🔁 Atualiza contador
+// 📊 Atualiza contador
 function atualizarContador() {
   const reservados = document.querySelectorAll(".reservado").length;
   const total = document.querySelectorAll(".item").length;
   contador.innerText = `📊 ${reservados} de ${total} itens escolhidos`;
 }
 
-// 🏗️ Montar lista
+// 🏗️ Criar lista
 Object.keys(categorias).forEach(categoria => {
 
   const titulo = document.createElement("h2");
@@ -177,7 +180,7 @@ Object.keys(categorias).forEach(categoria => {
 
     lista.appendChild(div);
 
-    // 🔄 Tempo real
+    // 🔄 Atualização em tempo real
     onSnapshot(doc(db, "lista", id), (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -186,7 +189,6 @@ Object.keys(categorias).forEach(categoria => {
 
         botao.innerText = "Remover";
         botao.className = "btn-remover";
-
       } else {
         div.classList.remove("reservado");
         pessoa.innerText = "";
@@ -198,15 +200,28 @@ Object.keys(categorias).forEach(categoria => {
       atualizarContador();
     });
 
-    // 🖱️ Ação do botão
+    // 🖱️ Clique
     botao.onclick = async () => {
+      const ref = doc(db, "lista", id);
+
       if (div.classList.contains("reservado")) {
-        await deleteDoc(doc(db, "lista", id));
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          const data = snap.data();
+
+          if (data.userId === userId) {
+            await deleteDoc(ref);
+          } else {
+            alert("Você não pode remover a reserva de outra pessoa!");
+          }
+        }
       } else {
         const nomePessoa = prompt("Digite seu nome:");
         if (nomePessoa) {
-          await setDoc(doc(db, "lista", id), {
-            nome: nomePessoa
+          await setDoc(ref, {
+            nome: nomePessoa,
+            userId: userId
           });
         }
       }
