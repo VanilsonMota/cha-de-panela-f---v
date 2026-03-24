@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Chá de Panela - Fernanda & Vitor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff7f7;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #d63384;
+    }
+    .item {
+      margin: 5px 0;
+    }
+    .contador {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 20px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🏠 Lista de Chá de Panela</h1>
+<h2>👰🤵 Fernanda & Vitor</h2>
+
+<div id="lista">
+
+<h3>🛏️ Quarto</h3>
+<div class="item"><input type="checkbox"> Jogo de lençol</div>
+<div class="item"><input type="checkbox"> Edredom</div>
+<div class="item"><input type="checkbox"> Travesseiro</div>
+<div class="item"><input type="checkbox"> Cesto de roupas</div>
+<div class="item"><input type="checkbox"> Cortinas</div>
+<div class="item"><input type="checkbox"> Tábua de passar roupa</div>
+
+<h3>🍳 Cozinha</h3>
+<div class="item"><input type="checkbox"> Utensílios de cozinha</div>
+<div class="item"><input type="checkbox"> Faqueiro</div>
+<div class="item"><input type="checkbox"> Jogo de copos</div>
+<div class="item"><input type="checkbox"> Tapete de cozinha</div>
+<div class="item"><input type="checkbox"> Pano de louça</div>
+<div class="item"><input type="checkbox"> Formas</div>
+<div class="item"><input type="checkbox"> Potes organizadores</div>
+<div class="item"><input type="checkbox"> Fruteira de mesa</div>
+<div class="item"><input type="checkbox"> Jarra de vidro</div>
+<div class="item"><input type="checkbox"> Toalha de mesa</div>
+<div class="item"><input type="checkbox"> Tábua de cortar carne</div>
+
+<h3>🛁 Banheiro</h3>
+<div class="item"><input type="checkbox"> Jogo de toalha de banho</div>
+<div class="item"><input type="checkbox"> Tapete de banheiro</div>
+<div class="item"><input type="checkbox"> Toalhas de mão</div>
+<div class="item"><input type="checkbox"> Organizadores / saboneteira</div>
+
+<h3>🛋️ Sala</h3>
+<div class="item"><input type="checkbox"> Colcha para sofá</div>
+<div class="item"><input type="checkbox"> Almofadas</div>
+<div class="item"><input type="checkbox"> Vaso decorativo</div>
+
+</div>
+
+<div class="contador" id="contador">
+📊 0 itens escolhidos
+</div>
+
+<div class="footer">
+💕 Obrigada pela presença e carinho!
+</div>
+
+<script>
+const checkboxes = document.querySelectorAll("input[type='checkbox']");
+const contador = document.getElementById("contador");
+
+checkboxes.forEach(cb => {
+  cb.addEventListener("change", () => {
+    const marcados = document.querySelectorAll("input[type='checkbox']:checked").length;
+    contador.innerText = `📊 ${marcados} itens escolhidos`;
+  });
+});
+</script>
+
+</body>
+</html>
