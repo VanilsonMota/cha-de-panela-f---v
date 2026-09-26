@@ -86,17 +86,3 @@ Este projeto foi desenvolvido com o objetivo de:
 * Criar uma experiência simples e moderna para os convidados
 * Praticar desenvolvimento web com integração em tempo real
 
----
-
-## 📌 Melhorias futuras
-
-* Interface mais sofisticada (UI/UX)
-* Sistema de autenticação simples
-* Bloqueio de remoção por terceiros
-* Integração com links de compra
-
----
-
-## 💕
-
-Agradecemos pela participação e carinho!
